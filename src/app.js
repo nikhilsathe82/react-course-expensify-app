@@ -13,18 +13,18 @@ import './styles/styles.scss';
 
 const store = configureStore(); //gets its return value from configurestore() and get access to store.dispatch, store.getState. store.subscribe
 
-store.dispatch(addExpense({ description: 'water bill',amount:3343 }));
-store.dispatch(addExpense({ description: 'gas bill',createdAt:1000 }));
-store.dispatch(addExpense({ description: 'Rent',amount:8500 }));
+// store.dispatch(addExpense({ description: 'water bill',amount:3343 }));
+// store.dispatch(addExpense({ description: 'gas bill',createdAt:1000 }));
+// store.dispatch(addExpense({ description: 'Rent',amount:8500 }));
 // store.dispatch(setTextFilter('water'));
 
 // setTimeout(() =>{
 //    store.dispatch(setTextFilter("bill"));
 // },3000);
 
-const state = store.getState();
-const visibleExpenses = getVisibleExpenses(state.expenses, state.filters);
-console.log(visibleExpenses);
+// const state = store.getState();
+// const visibleExpenses = getVisibleExpenses(state.expenses, state.filters);
+// console.log(visibleExpenses);
 
 //below we have to specify the store that we have share with rest of application. we have to set equal to redux store
 const jsx = (
