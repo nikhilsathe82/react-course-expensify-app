@@ -10,6 +10,7 @@ import { addExpense } from './actions/expenses';
 import getVisibleExpenses from './selectors/expenses';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
+import 'react-dates/lib/css/_datepicker.css';
 
 const store = configureStore(); //gets its return value from configurestore() and get access to store.dispatch, store.getState. store.subscribe
 

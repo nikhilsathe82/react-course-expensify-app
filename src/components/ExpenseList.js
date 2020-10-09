@@ -9,10 +9,15 @@ import selectExpenses from '../selectors/expenses'
 const ExpenseList = (props) => (
   <div>
     <h1>ExpenseList</h1> 
-    {props.expenses.map((expense)=> { //.map takes in individual expense
-         return <ExpenseListItem key={expense.id} {...expense}/>; //thru spread operator we are passing each ...expeense to expenselistitem where it is destructure
-    })};
-     
+    {
+      props.expenses.length === 0 ? (
+            <p>No Expenses</p>
+      ) : (
+          props.expenses.map((expense)=> { //.map takes in individual expense
+          return <ExpenseListItem key={expense.id} {...expense}/>; //thru spread operator we are passing each ...expeense to expenselistitem where it is destructure
+     })
+      )
+    }
   </div>
 );
 
