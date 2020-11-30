@@ -1,3 +1,4 @@
+
 import selectExpenses from '../../selectors/expenses';
 
 const expenses = [{
@@ -12,7 +13,7 @@ const expenses = [{
     description: "Rent",
     note: '',
     amount: 500000,
-    createdAt: moment(0).subtract(4,'days'),valueOf();
+    createdAt: moment(0).subtract(4,'days'),valueOf()
 },
 {
     id: '3',
