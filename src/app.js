@@ -6,7 +6,7 @@ import  ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'; //provider allows to provide store to all components that make up our application
 import AppRouter from "./routers/AppRouter";
 import configureStore from "./store/configureStore";
-import { addExpense } from './actions/expenses';
+import { startSetExpenses } from './actions/expenses';
 import getVisibleExpenses from './selectors/expenses';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
@@ -35,7 +35,16 @@ const jsx = (
       <AppRouter />
   </Provider>
 );
-ReactDOM.render(jsx,document.getElementById('app'));
+ReactDOM.render(<p>Loading...</p>,document.getElementById('app'));
+
+store.dispatch(startSetExpenses()).then (() => {
+
+  ReactDOM.render(jsx,document.getElementById('app'));
+  
+});
+
+
+
 
 //code for passing children component
 // const Layout = (props) => { //stateless functional component
