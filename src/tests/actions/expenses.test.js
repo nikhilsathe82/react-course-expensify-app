@@ -1,6 +1,7 @@
+import { database } from 'firebase';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { startAddExpense, addExpense, editExpense, removeExpense,startSetExpenses } from '../../actions/expenses';
+import { startAddExpense, addExpense, editExpense, startEditExpense, removeExpense, startSetExpenses, startRemoveExpense } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 
 const createMockStore = configureMockStore ([thunk]);
@@ -22,6 +23,29 @@ test('should setup remove expense action object', () => {
     });
 });
 
+test('should remove expense from firebase', (done) => {
+    const store = createMockStore({}); // to ensure everything is dispatched correctly
+    const id = expenses[2].id;// create id var
+    //disptach startremoveexpense. then is added to wait till the process is complete
+    store.dispatch(startRemoveExpense({ id })).then(() => {
+      const actions = store.getActions();
+      // id is the id from above to ensure that it was actually that was passed in
+      expect(actions[0]).toEqual({ 
+         type: 'REMOVE_EXPENSE',
+         id
+      });
+      // fetch the data to ensure that it was actually deleted
+      //return the promise to as to chain on. means pass the data to below .then.
+      return database.ref(`expenses/${id}`).once('value');  
+    }).then((snapshot) => {
+       //we have access to promise data from above over here
+       // if we use snapshot.val on id that does not exist we get null back
+       expect(snapshot.val()).toBeFalsy(); 
+       done();
+    });
+
+}); 
+
 test('should setup edit expense action object', () => {
     const action = editExpense('123abc', { note: 'New Note Value' });
     expect(action).toEqual({ //use toEqual for  objects or array. while use toBe for numbers or booleans
@@ -32,6 +56,26 @@ test('should setup edit expense action object', () => {
         }
     });
 });
+
+test('should edit expense from firebase',(done) => {
+   const store = createMockStore({});
+   const id = expenses[0].id;
+   const updates = {amount: 21045};
+   store.dispatch(startEditExpense(id,updates)).then(() => {
+      expect(actions[0]).toEqual({
+         type:'EDIT_EXPENSE',
+         id,
+         updates
+      });
+    //fetch data from firebae and check the amount val to check that indeed it was changetd.
+    return database.ref(`expenses/${id}`).once('value');
+    // above line we are returning promise. so in .then below can be chained promise. .then contains data in snapshot that we can use to check data from firebase.
+   }).then((snapshot)=>{
+     expect(snapshot.val().amount).toBe(updates.amount);
+     done();
+   });
+});
+
 
 test('should setup add expense action object with provided values', () => {
     // const expenseData = {
