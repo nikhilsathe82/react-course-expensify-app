@@ -18,8 +18,10 @@ firebase.analytics();
 
 
 const database = firebase.database();
+// a provider provides a way to provide authenticaiton. we can have for fb, twiter, google etc
+const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
-export { firebase, database as default };
+export { firebase, googleAuthProvider, database as default };
 
 // // child_removed (this event is get fired when one of the expenses is deleted )
 

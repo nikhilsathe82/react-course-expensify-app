@@ -4,14 +4,15 @@
 import React from 'react';
 import  ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'; //provider allows to provide store to all components that make up our application
-import AppRouter from "./routers/AppRouter";
+import AppRouter, { history } from './routers/AppRouter';
 import configureStore from "./store/configureStore";
 import { startSetExpenses } from './actions/expenses';
+import { login, logout} from './actions/auth';
 import getVisibleExpenses from './selectors/expenses';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
-import './firebase/firebase';
+import { firebase } from './firebase/firebase';
 
 
 const store = configureStore(); //gets its return value from configurestore() and get access to store.dispatch, store.getState. store.subscribe
@@ -35,15 +36,45 @@ const jsx = (
       <AppRouter />
   </Provider>
 );
+
+//if user is already in applicaiton we do not want to render again means refresh and display again. just render once
+let hasRendered = false;
+// to check if we have rendered already or not
+const renderApp = () => {
+  // if we have not rendered then we are going to render
+  if (!hasRendered) {
+    ReactDOM.render(jsx,document.getElementById('app'));
+    hasRendered = true;
+  }
+};
+
 ReactDOM.render(<p>Loading...</p>,document.getElementById('app'));
 
-store.dispatch(startSetExpenses()).then (() => {
-
-  ReactDOM.render(jsx,document.getElementById('app'));
-  
+//onAuthstatechanged takes a call back and runs it when auth state changs. like user goes from unauth to auth or vice versa.
+firebase.auth().onAuthStateChanged((user) => {
+ if (user){
+   //as user is logged in then dispatch login action
+    store.dispatch(login(user.uid));
+   //just logged in
+    store.dispatch(startSetExpenses()).then(() => {
+    renderApp();
+    // redirect the user if they are on login page
+    if (history.location.pathname === '/') {
+       history.push('/dashboard');
+    };
+    console.log('log in');
+  });
+   
+ } else {
+   // logout action generator takes no parameters so we do not pass any args
+   store.dispatch(logout());
+   //history.push('/'); // brings to login page.
+   renderApp(); 
+   console.log('log out');
+   //brings to login page
+   history.push('/');
+ }
 });
-
-
 
 
 //code for passing children component
