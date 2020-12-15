@@ -10,8 +10,10 @@ export const addExpense = ( expense ) => ({
 
 //component calls action generator > action generator returns function> component dispatches func > func runs(has the ability to dispatch other actions and do whatever it wants)
 //asynchronous action responsible for adding data to  firebase. i get expenseData and if not received we set to empty obj
+// you also get access to getState from wehre you can access uid
 export const startAddExpense = (expenseData = {}) => {
-  return (dispatch) => {
+  return (dispatch,getState) => {
+     const uid = getState().auth.uid;
      const {
         description = '',
         note='',
@@ -22,7 +24,7 @@ export const startAddExpense = (expenseData = {}) => {
      const expense = {description,note,amount,createdAt}; //define an expense obj
      
      // add to firebase and then add to redux store thru dispatch. push the expense obj.
-     return database.ref('expenses').push(expense).then((ref) => {
+     return database.ref(`users/${uid}/expenses`).push(expense).then((ref) => {
         //dispatch the action addExpense from above to change the redux store
         dispatch(addExpense({
             id: ref.key,
@@ -42,9 +44,10 @@ export const removeExpense = ({id}={}) => ({
 export const startRemoveExpense = ({ id } = {}) => {
    //async function that is going to interact with firebase and then it will dispatch asysn ction to change redux store
    //'dispatch' is given to this func by redux library
-   return (dispatch) => {
+   return (dispatch,getState) => {
+      const uid = getState().auth.uid;
       // interact with firebase and remove the specific id. 
-      return database.ref(`expenses/${id}`).remove().then(() => {//promise executes when expense is removed from fb.
+      return database.ref(`users/${uid}/expenses/${id}`).remove().then(() => {//promise executes when expense is removed from fb.
           //dispatch whatever comes back from removeExpense action generator from above to store.
           dispatch(removeExpense({ id }));
       });
@@ -59,8 +62,9 @@ export const editExpense = (id,updates) => ({
 });
 //asynchonous action responsible for editing/updating data from firebase. this is done to store data from store to fb
 export const startEditExpense = (id,updates) => {
-   return (dispatch) => {
-      return database.ref(`expenses/${id}`).update(updates).then(() => {
+   return (dispatch,getState) => {
+      const uid = getState().auth.uid;
+      return database.ref(`users/${uid}/expenses/${id}`).update(updates).then(() => {
          dispatch(editExpense);
       });
    };
@@ -74,14 +78,15 @@ export const setExpenses = (expenses) => ({
    expenses
 });
 
-//1. fetch all expense data at once from firebase
+//1. fetch or read all expense data at once from firebase
 //2. parse that data into array
 //3. dispatch SET_EXPENSES
-
+// to read from the expenses data from firebase
 export const startSetExpenses = () => {
-   return (dispatch) => {
+   return (dispatch,getState) => {
+      const uid = getState().auth.uid;
       // return the promise that allows us to access startSetExpenses in app.js where we dispatch things
-     return database.ref('expenses').once('value').then((snapshot) => { 
+     return database.ref(`users/${uid}/expenses`).once('value').then((snapshot) => { 
         const expenses = [];
         snapshot.forEach((childSnapshot) => {
           expenses.push({
