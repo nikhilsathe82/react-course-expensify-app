@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'test'){
 module.exports = (env) => {
     const isProduction = env === 'production'; // if env is production. then is production is true. if false > isPRoduction is false and web pack is run without production optimization
     // console.log('env',env);
-    // const CSSExtract = new ExtractTextPlugin('style.css'); //the 
+    //const CSSExtract = new ExtractTextPlugin('style.css'); //the 
     
     return {
 
@@ -50,7 +50,7 @@ module.exports = (env) => {
             }]
         },
         plugins:[
-            // CSSExtract,
+            //CSSExtract,
             new webpack.DefinePlugin({
                'process.env.FIREBASE_API_KEY': JSON.stringify(process.env.FIREBASE_API_KEY),
                'process.env.FIREBASE_AUTH_DOMAIN': JSON.stringify(process.env.FIREBASE_AUTH_DOMAIN),
