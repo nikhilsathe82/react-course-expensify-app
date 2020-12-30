@@ -72,9 +72,8 @@ export default class ExpenseForm extends React.Component {
         const {description,amount} = this.state;
         const isEnabled = description.length>0 && amount.length>0;
         return (
-            <div>
-             {this.state.error && <p>{this.state.error}</p>} 
-             <form onSubmit={this.onSubmit}>
+            <form className="form" onSubmit={this.onSubmit}>
+               {this.state.error && <p className="form__error">{this.state.error}</p>}
                 <input 
                    type="text"
                    placeholder="Description"
@@ -105,9 +104,12 @@ export default class ExpenseForm extends React.Component {
                 onChange={this.onNoteChange}
                 >
                 </textarea>
-                <button disabled={!isEnabled}>Add Expense</button>
-             </form>
-            </div>
+                <div>
+                    <button className="button" disabled={!isEnabled}>Save Expense</button>
+                </div>
+                
+            </form>
+            
         )
     }
 }
